@@ -1,4 +1,4 @@
-## 👋 Hi, I'm **Minas Maher**
+## 👋 Hi, I'm **Mina Maher**
 🎯 **Ai Enginner | Computer Science Student | Back-End Enginner**
 
 ---
