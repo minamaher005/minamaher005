@@ -1,0 +1,40 @@
+name: Generate 3D contribution world
+
+on:
+  schedule:
+    # Daily at 18:10 UTC. Scheduled workflows use UTC.
+    - cron: "10 18 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: profile-3d-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out profile repository
+        uses: actions/checkout@v5
+
+      - name: Generate profile contribution SVGs
+        uses: yoshi389111/github-profile-3d-contrib@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          USERNAME: ${{ github.repository_owner }}
+
+      - name: Commit generated SVGs if they changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A profile-3d-contrib
+          if git diff --cached --quiet; then
+            echo "No generated SVG changes to commit."
+          else
+            git commit -m "chore: update 3D contribution world"
+            git push
+          fi
